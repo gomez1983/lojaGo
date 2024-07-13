@@ -28,14 +28,14 @@ type Produto struct {
 var temp = template.Must(template.ParseGlob("templates/*.html")) /* Encapsula todos os templates html do pacote para a variável*/
 
 func main() {
-	http.HandleFunc("/", index)
+	http.HandleFunc("/", index) /*Função com a rota que especifica quem vai atender*/
 	http.ListenAndServe(":8000", nil)
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	db := conectaComBancoDeDados()
+func index(w http.ResponseWriter, r *http.Request) { /*Index é quem vai atender a rota*/
+	db := conectaComBancoDeDados() /*Abre a conexão com o BD*/
 
-	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
+	selectDeTodosOsProdutos, err := db.Query("select * from produtos") /*Faz o select com o DB para trazer os produtos*/
 	if err != nil {
 		panic(err.Error())
 	}
@@ -50,7 +50,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		err = selectDeTodosOsProdutos.Scan(&id, &nome, &descricao, &preco, &quantidade)
 		if err != nil {
-			panic(err.Error())
+			panic(err.Error()) /*A função panic é usada para interromper a execução do programa*/
 		}
 
 		p.Nome = nome
@@ -61,6 +61,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 		produtos = append(produtos, p)
 	}
 
-	temp.ExecuteTemplate(w, "Index", produtos)
+	temp.ExecuteTemplate(w, "Index", produtos) /*Cria a lista de produtos e repassa ela para o template em Index*/
 	defer db.Close()
 }
