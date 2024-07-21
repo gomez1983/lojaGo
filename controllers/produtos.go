@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"log"
 	"lojaGo/models"
 	"net/http"
+	"strconv"
 	"text/template"
 )
 
@@ -15,4 +17,26 @@ func Index(w http.ResponseWriter, r *http.Request) { /*Index é quem vai atender
 
 func New(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "New", nil)
+}
+
+func Insert(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		nome := r.FormValue("nome")
+		descricao := r.FormValue("descricao")
+		preco := r.FormValue("preco")
+		quantidade := r.FormValue("quantidade")
+
+		precoConvertidoParaFloat, err := strconv.ParseFloat(preco, 64) /*Converte a variável preço (que chega como String) para Float64*/
+		if err != nil {
+			log.Println("Erro na conversão do preço:", err)
+		}
+
+		quantidadeConvertidaParaInt, err := strconv.Atoi(quantidade) /*Converte a variável quantidade (que chega como String) para Int*/
+		if err != nil {
+			log.Println("Erro na conversão da quantidade:", err)
+		}
+
+		models.CriaNovoProduto(nome, descricao, precoConvertidoParaFloat, quantidadeConvertidaParaInt)
+	}
+	http.Redirect(w, r, "/", 301) /*Código 301 é responsável por sinalizar que deu tudo certo com a requisição */
 }
