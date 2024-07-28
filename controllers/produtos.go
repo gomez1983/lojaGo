@@ -40,3 +40,9 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", 301) /*Código 301 é responsável por sinalizar que deu tudo certo com a requisição */
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	idDoProduto := r.URL.Query().Get("id") /*A função pega a URL do botão DELETE*/
+	models.DeletaProduto(idDoProduto)      /*Deleta o produto*/
+	http.Redirect(w, r, "/", 301)          /*W é o responseWriter, r é a requisição, '/' é a página principal e 301 é o código do retorno */
+}
